@@ -10,8 +10,6 @@ from app.test.sample_project_dir.sample_class import SampleClass
 module = 'sample_project_dir.sample_class'
 module = importlib.import_module(module)
 
-
-
 EXPECTED_MODULES = [
     LundyModule('sample_project_dir.sample_class', 'sample_project_dir/sample_class.py'),
     LundyModule('sample_project_dir.sample_package.second_sample_class',
@@ -29,36 +27,131 @@ for method_name in EXPECTED_METHODS_NAMES:
 class LundyProjectTests(unittest.TestCase):
     def setUp(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        project_dir = os.path.join(dir_path, 'sample_project_dir')
-        self.project = LundyProject("Lundy", project_dir)
+        self.project_dir = os.path.join(dir_path, 'sample_project_dir')
+        self.project = LundyProject("Lundy")
 
     def test_find_all_modules_in_project(self):
-        self.project.scan()
+        self.project.scan(self.project_dir)
         self.assertEqual(len(self.project.modules), 2)
         for module, expected_module in zip(self.project.modules, EXPECTED_MODULES):
             self.assertEqual(module, expected_module)
 
     def test_to_json(self):
-        self.project.scan()
-        #self.project.to_json()
+        self.project.scan(self.project_dir)
+        print('')
+        EXPECTED_JSON = {'modules': [{'classes': [{'name': 'SampleClass', 'methods': [{'args': [], 'name': '__doc__'}, {
+            'args': [{'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'var2'},
+                     {'default': None, 'type': None, 'name': 'var3'}], 'name': '__init__'}, {'args': [],
+                                                                                             'name': '__module__'}, {
+                                                                                          'args': [{'default': None,
+                                                                                                    'type': None,
+                                                                                                    'name': 'self'}],
+                                                                                          'name': 'sample_method'}, {
+                                                                                          'args': [{'default': None,
+                                                                                                    'type': None,
+                                                                                                    'name': 'self'},
+                                                                                                   {'default': None,
+                                                                                                    'type': None,
+                                                                                                    'name': 'arg1'},
+                                                                                                   {'default': None,
+                                                                                                    'type': None,
+                                                                                                    'name': 'arg2'}],
+                                                                                          'name': 'sample_method_with_args'},
+                                                                                      {'args': [{'default': None,
+                                                                                                 'type': None,
+                                                                                                 'name': 'self'},
+                                                                                                {'default': None,
+                                                                                                 'type': None,
+                                                                                                 'name': 'arg5'},
+                                                                                                {'default': None,
+                                                                                                 'type': None,
+                                                                                                 'name': 'arg6'},
+                                                                                                {'default': None,
+                                                                                                 'type': "<type 'NoneType'>",
+                                                                                                 'name': 'arg7'},
+                                                                                                {'default': 4,
+                                                                                                 'type': "<type 'int'>",
+                                                                                                 'name': 'arg8'}],
+                                                                                       'name': 'sample_method_with_args_and_kwargs'},
+                                                                                      {'args': [{'default': None,
+                                                                                                 'type': None,
+                                                                                                 'name': 'self'},
+                                                                                                {'default': None,
+                                                                                                 'type': "<type 'NoneType'>",
+                                                                                                 'name': 'arg3'},
+                                                                                                {'default': 4,
+                                                                                                 'type': "<type 'int'>",
+                                                                                                 'name': 'arg4'}],
+                                                                                       'name': 'sample_method_with_kwargs'}]},
+                                                  {'name': 'SampleClass2', 'methods': [{'args': [], 'name': '__doc__'},
+                                                                                       {'args': [],
+                                                                                        'name': '__module__'}]}],
+                                      'py_path': 'sample_project_dir.sample_class',
+                                      'os_path': 'sample_project_dir/sample_class.py'}, {'classes': [
+            {'name': 'SampleTwo', 'methods': [{'args': [], 'name': '__doc__'}, {'args': [], 'name': '__module__'}]}],
+                                                                                         'py_path': 'sample_project_dir.sample_package.second_sample_class',
+                                                                                         'os_path': 'sample_project_dir/sample_package/second_sample_class.py'}],
+                         'name': 'Lundy'}
+        self.assertEqual(self.project.to_json(), EXPECTED_JSON)
+        EXPECTED_STRING = '''{"modules": [{"classes": [{"name": "SampleClass", "methods": [{"args": [], "name": "__doc__"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "var2"}, {"default": null, "type": null, "name": "var3"}], "name": "__init__"}, {"args": [], "name": "__module__"}, {"args": [{"default": null, "type": null, "name": "self"}], "name": "sample_method"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg1"}, {"default": null, "type": null, "name": "arg2"}], "name": "sample_method_with_args"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg5"}, {"default": null, "type": null, "name": "arg6"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg7"}, {"default": 4, "type": "<type 'int'>", "name": "arg8"}], "name": "sample_method_with_args_and_kwargs"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg3"}, {"default": 4, "type": "<type 'int'>", "name": "arg4"}], "name": "sample_method_with_kwargs"}]}, {"name": "SampleClass2", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_class", "os_path": "sample_project_dir/sample_class.py"}, {"classes": [{"name": "SampleTwo", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_package.second_sample_class", "os_path": "sample_project_dir/sample_package/second_sample_class.py"}], "name": "Lundy"}'''
+        self.assertEqual(self.project.to_string(), EXPECTED_STRING)
+
+    def test_hash(self):
+        self.project.scan(self.project_dir)
+        EXPECTED_HASH = 'cf92971ae32948efb0d608544981b4de9dd7b46dc9d22f20f009c1615084bfb3'
+        self.assertEqual(self.project.hash, EXPECTED_HASH)
+
 
 class LundyModuleTests(unittest.TestCase):
     def setUp(self):
         self.SAMPLE_PY_PATH = 'sample_project_dir.sample_class'
         self.SAMPLE_OS_PATH = 'sample_project_dir/sample_package/second_sample_class.py'
+        self.lundy_module = LundyModule(self.SAMPLE_PY_PATH, self.SAMPLE_OS_PATH)
         print('')
 
     def test_scan_module(self):
-        lundy_module = LundyModule(self.SAMPLE_PY_PATH, self.SAMPLE_OS_PATH)
-        lundy_module.scan()
-        self.assertEqual(len(lundy_module.classes), 2)
-        self.assertEqual(len(lundy_module.classes[0].methods), 7)
-        self.assertEqual(len(lundy_module.classes[1].methods), 2)
+        self.lundy_module.scan()
+        self.assertEqual(len(self.lundy_module.classes), 2)
+        self.assertEqual(len(self.lundy_module.classes[0].methods), 7)
+        self.assertEqual(len(self.lundy_module.classes[1].methods), 2)
 
-        for c in lundy_module.classes:
+        for c in self.lundy_module.classes:
             self.assertIn(c.name, EXPECTED_CLASSES)
-        for m in lundy_module.classes[0].methods:
+        for m in self.lundy_module.classes[0].methods:
             self.assertIn(m.name, EXPECTED_METHODS_NAMES)
+
+    def test_to_json(self):
+        self.lundy_module.scan()
+        EXPECTED_JSON = {'classes': [dict(name='SampleClass', methods=[{'args': [], 'name': '__doc__'}, {
+            'args': [{'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'var2'},
+                     {'default': None, 'type': None, 'name': 'var3'}], 'name': '__init__'},
+                                                                       {'args': [], 'name': '__module__'}, {'args': [
+                {'default': None, 'type': None, 'name': 'self'}], 'name': 'sample_method'}, {'args': [
+                {'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'arg1'},
+                {'default': None, 'type': None, 'name': 'arg2'}], 'name': 'sample_method_with_args'}, {'args': [
+                {'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'arg5'},
+                {'default': None, 'type': None, 'name': 'arg6'},
+                {'default': None, 'type': "<type 'NoneType'>", 'name': 'arg7'},
+                {'default': 4, 'type': "<type 'int'>", 'name': 'arg8'}], 'name': 'sample_method_with_args_and_kwargs'},
+                                                                       {'args': [{'default': None, 'type': None,
+                                                                                  'name': 'self'}, {'default': None,
+                                                                                                    'type': "<type 'NoneType'>",
+                                                                                                    'name': 'arg3'},
+                                                                                 {'default': 4, 'type': "<type 'int'>",
+                                                                                  'name': 'arg4'}],
+                                                                        'name': 'sample_method_with_kwargs'}]),
+                                     {'name': 'SampleClass2', 'methods': [{'args': [], 'name': '__doc__'},
+                                                                          {'args': [], 'name': '__module__'}]}],
+                         'py_path': 'sample_project_dir.sample_class',
+                         'os_path': 'sample_project_dir/sample_package/second_sample_class.py'}
+        self.assertEqual(self.lundy_module.to_json(), EXPECTED_JSON)
+        EXPECTED_STRING = '''{"classes": [{"name": "SampleClass", "methods": [{"args": [], "name": "__doc__"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "var2"}, {"default": null, "type": null, "name": "var3"}], "name": "__init__"}, {"args": [], "name": "__module__"}, {"args": [{"default": null, "type": null, "name": "self"}], "name": "sample_method"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg1"}, {"default": null, "type": null, "name": "arg2"}], "name": "sample_method_with_args"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg5"}, {"default": null, "type": null, "name": "arg6"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg7"}, {"default": 4, "type": "<type 'int'>", "name": "arg8"}], "name": "sample_method_with_args_and_kwargs"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg3"}, {"default": 4, "type": "<type 'int'>", "name": "arg4"}], "name": "sample_method_with_kwargs"}]}, {"name": "SampleClass2", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_class", "os_path": "sample_project_dir/sample_package/second_sample_class.py"}'''
+        self.assertEqual(self.lundy_module.to_string(), EXPECTED_STRING)
+
+    def test_hash(self):
+        self.lundy_module.scan()
+        EXPECTED_HASH = '33f9dcdc20a29eed0ce1c79b8f3c202c1c444d79e352c9cc05ae95c2c2826879'
+        self.assertEqual(self.lundy_module.hash, EXPECTED_HASH)
 
 
 class LundyClassTests(unittest.TestCase):
@@ -71,6 +164,36 @@ class LundyClassTests(unittest.TestCase):
         self.assertEqual(len(self.lundy_class.methods), 7)
         for m in self.lundy_class.methods:
             self.assertIn(m.name, EXPECTED_METHODS_NAMES)
+
+    def test_to_json(self):
+        self.lundy_class.scan(SampleClass)
+
+        EXPECTED_JSON = {'name': 'SampleClass', 'methods': [{'args': [], 'name': '__doc__'}, {
+            'args': [{'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'var2'},
+                     {'default': None, 'type': None, 'name': 'var3'}], 'name': '__init__'},
+                                                            {'args': [], 'name': '__module__'},
+                                                            {'args': [{'default': None, 'type': None, 'name': 'self'}],
+                                                             'name': 'sample_method'}, {'args': [
+                {'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'arg1'},
+                {'default': None, 'type': None, 'name': 'arg2'}], 'name': 'sample_method_with_args'}, {'args': [
+                {'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'arg5'},
+                {'default': None, 'type': None, 'name': 'arg6'},
+                {'default': None, 'type': "<type 'NoneType'>", 'name': 'arg7'},
+                {'default': 4, 'type': "<type 'int'>", 'name': 'arg8'}], 'name': 'sample_method_with_args_and_kwargs'},
+                                                            {'args': [{'default': None, 'type': None, 'name': 'self'},
+                                                                      {'default': None, 'type': "<type 'NoneType'>",
+                                                                       'name': 'arg3'},
+                                                                      {'default': 4, 'type': "<type 'int'>",
+                                                                       'name': 'arg4'}],
+                                                             'name': 'sample_method_with_kwargs'}]}
+        self.assertEqual(self.lundy_class.to_json(), EXPECTED_JSON)
+        EXPECTED_STRING = '''{"name": "SampleClass", "methods": [{"args": [], "name": "__doc__"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "var2"}, {"default": null, "type": null, "name": "var3"}], "name": "__init__"}, {"args": [], "name": "__module__"}, {"args": [{"default": null, "type": null, "name": "self"}], "name": "sample_method"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg1"}, {"default": null, "type": null, "name": "arg2"}], "name": "sample_method_with_args"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg5"}, {"default": null, "type": null, "name": "arg6"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg7"}, {"default": 4, "type": "<type 'int'>", "name": "arg8"}], "name": "sample_method_with_args_and_kwargs"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg3"}, {"default": 4, "type": "<type 'int'>", "name": "arg4"}], "name": "sample_method_with_kwargs"}]}'''
+        self.assertEqual(self.lundy_class.to_string(), EXPECTED_STRING)
+
+    def test_hash(self):
+        self.lundy_class.scan(SampleClass)
+        hash_from_class = '9bcd8f3b68b59cc517c244d780362f290d47c460cfa11607d8844751fbe99028'
+        self.assertEqual(self.lundy_class.hash, hash_from_class)
 
 
 EXPECTED_ARGS = ['self', 'arg5', 'arg6', 'arg7', 'arg8']
@@ -93,7 +216,12 @@ class LundyMethodTests(unittest.TestCase):
 
     def test_json(self):
         self.lundy_method.scan(SampleClass.sample_method_with_args_and_kwargs)
-        EXPECTED_JSON = {'args': [{'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'arg5'}, {'default': None, 'type': None, 'name': 'arg6'}, {'default': None, 'type': "<type 'NoneType'>", 'name': 'arg7'}, {'default': 4, 'type': "<type 'int'>", 'name': 'arg8'}], 'name': 'sample_method_with_args_and_kwargs'}
+        EXPECTED_JSON = {
+            'args': [{'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'arg5'},
+                     {'default': None, 'type': None, 'name': 'arg6'},
+                     {'default': None, 'type': "<type 'NoneType'>", 'name': 'arg7'},
+                     {'default': 4, 'type': "<type 'int'>", 'name': 'arg8'}],
+            'name': 'sample_method_with_args_and_kwargs'}
         json_from_method = self.lundy_method.to_json()
         self.assertEqual(json_from_method, EXPECTED_JSON)
         self.assertEqual(type(json_from_method), dict)
@@ -101,6 +229,11 @@ class LundyMethodTests(unittest.TestCase):
         string_from_method = self.lundy_method.to_string()
         self.assertEqual(string_from_method, EXPECTED_STRING)
         self.assertEqual(type(string_from_method), str)
+
+    def test_hash(self):
+        self.lundy_method.scan(SampleClass.sample_method_with_args_and_kwargs)
+        expected_hash = 'ccf3c0d6be8c0f832e4281bc91eefb2c85de7d076c472d856cfd43e5ddeac274'
+        self.assertEqual(self.lundy_method.hash, expected_hash)
 
 
 class LundyArgTests(unittest.TestCase):
