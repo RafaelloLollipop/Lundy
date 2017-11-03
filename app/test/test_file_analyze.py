@@ -38,7 +38,6 @@ class LundyProjectTests(unittest.TestCase):
 
     def test_to_json(self):
         self.project.scan(self.project_dir)
-        print('')
         EXPECTED_JSON = {'modules': [{'classes': [{'name': 'SampleClass', 'methods': [{'args': [], 'name': '__doc__'}, {
             'args': [{'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'var2'},
                      {'default': None, 'type': None, 'name': 'var3'}], 'name': '__init__'}, {'args': [],
@@ -94,7 +93,12 @@ class LundyProjectTests(unittest.TestCase):
                          'name': 'Lundy'}
         self.assertEqual(self.project.to_json(), EXPECTED_JSON)
         EXPECTED_STRING = '''{"modules": [{"classes": [{"name": "SampleClass", "methods": [{"args": [], "name": "__doc__"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "var2"}, {"default": null, "type": null, "name": "var3"}], "name": "__init__"}, {"args": [], "name": "__module__"}, {"args": [{"default": null, "type": null, "name": "self"}], "name": "sample_method"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg1"}, {"default": null, "type": null, "name": "arg2"}], "name": "sample_method_with_args"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg5"}, {"default": null, "type": null, "name": "arg6"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg7"}, {"default": 4, "type": "<type 'int'>", "name": "arg8"}], "name": "sample_method_with_args_and_kwargs"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg3"}, {"default": 4, "type": "<type 'int'>", "name": "arg4"}], "name": "sample_method_with_kwargs"}]}, {"name": "SampleClass2", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_class", "os_path": "sample_project_dir/sample_class.py"}, {"classes": [{"name": "SampleTwo", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_package.second_sample_class", "os_path": "sample_project_dir/sample_package/second_sample_class.py"}], "name": "Lundy"}'''
-        self.assertEqual(self.project.to_string(), EXPECTED_STRING)
+        string_from_project = self.project.to_string()
+        self.assertEqual(string_from_project, EXPECTED_STRING)
+
+        lundy_project_cp = LundyProject.from_string(string_from_project)
+        self.assertEqual(self.project, lundy_project_cp)
+        self.assertEqual(self.project.hash, lundy_project_cp.hash)
 
     def test_hash(self):
         self.project.scan(self.project_dir)
@@ -107,7 +111,6 @@ class LundyModuleTests(unittest.TestCase):
         self.SAMPLE_PY_PATH = 'sample_project_dir.sample_class'
         self.SAMPLE_OS_PATH = 'sample_project_dir/sample_package/second_sample_class.py'
         self.lundy_module = LundyModule(self.SAMPLE_PY_PATH, self.SAMPLE_OS_PATH)
-        print('')
 
     def test_scan_module(self):
         self.lundy_module.scan()
@@ -146,7 +149,12 @@ class LundyModuleTests(unittest.TestCase):
                          'os_path': 'sample_project_dir/sample_package/second_sample_class.py'}
         self.assertEqual(self.lundy_module.to_json(), EXPECTED_JSON)
         EXPECTED_STRING = '''{"classes": [{"name": "SampleClass", "methods": [{"args": [], "name": "__doc__"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "var2"}, {"default": null, "type": null, "name": "var3"}], "name": "__init__"}, {"args": [], "name": "__module__"}, {"args": [{"default": null, "type": null, "name": "self"}], "name": "sample_method"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg1"}, {"default": null, "type": null, "name": "arg2"}], "name": "sample_method_with_args"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg5"}, {"default": null, "type": null, "name": "arg6"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg7"}, {"default": 4, "type": "<type 'int'>", "name": "arg8"}], "name": "sample_method_with_args_and_kwargs"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg3"}, {"default": 4, "type": "<type 'int'>", "name": "arg4"}], "name": "sample_method_with_kwargs"}]}, {"name": "SampleClass2", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_class", "os_path": "sample_project_dir/sample_package/second_sample_class.py"}'''
-        self.assertEqual(self.lundy_module.to_string(), EXPECTED_STRING)
+        string_from_module = self.lundy_module.to_string()
+        self.assertEqual(string_from_module, EXPECTED_STRING)
+
+        lundy_module_cp = LundyModule.from_string(string_from_module)
+        self.assertEqual(self.lundy_module, lundy_module_cp)
+        self.assertEqual(self.lundy_module.hash, lundy_module_cp.hash)
 
     def test_hash(self):
         self.lundy_module.scan()
@@ -188,7 +196,12 @@ class LundyClassTests(unittest.TestCase):
                                                              'name': 'sample_method_with_kwargs'}]}
         self.assertEqual(self.lundy_class.to_json(), EXPECTED_JSON)
         EXPECTED_STRING = '''{"name": "SampleClass", "methods": [{"args": [], "name": "__doc__"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "var2"}, {"default": null, "type": null, "name": "var3"}], "name": "__init__"}, {"args": [], "name": "__module__"}, {"args": [{"default": null, "type": null, "name": "self"}], "name": "sample_method"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg1"}, {"default": null, "type": null, "name": "arg2"}], "name": "sample_method_with_args"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg5"}, {"default": null, "type": null, "name": "arg6"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg7"}, {"default": 4, "type": "<type 'int'>", "name": "arg8"}], "name": "sample_method_with_args_and_kwargs"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg3"}, {"default": 4, "type": "<type 'int'>", "name": "arg4"}], "name": "sample_method_with_kwargs"}]}'''
-        self.assertEqual(self.lundy_class.to_string(), EXPECTED_STRING)
+        string_from_class = self.lundy_class.to_string()
+        self.assertEqual(string_from_class, EXPECTED_STRING)
+
+        lundy_class_cp = LundyClass.from_string(string_from_class)
+        self.assertEqual(self.lundy_class, lundy_class_cp)
+        self.assertEqual(self.lundy_class.hash, lundy_class_cp.hash)
 
     def test_hash(self):
         self.lundy_class.scan(SampleClass)
@@ -229,6 +242,10 @@ class LundyMethodTests(unittest.TestCase):
         string_from_method = self.lundy_method.to_string()
         self.assertEqual(string_from_method, EXPECTED_STRING)
         self.assertEqual(type(string_from_method), str)
+
+        lundy_method_cp = LundyMethod.from_string(string_from_method)
+        self.assertEqual(self.lundy_method, lundy_method_cp)
+        self.assertEqual(self.lundy_method.hash, lundy_method_cp.hash)
 
     def test_hash(self):
         self.lundy_method.scan(SampleClass.sample_method_with_args_and_kwargs)
@@ -281,6 +298,10 @@ class LundyArgTests(unittest.TestCase):
         self.assertEqual(string_from_arg, EXPECTED_STRING)
         self.assertEqual(type(string_from_arg), str)
 
+        lundy_arg_cp = LundyArg.from_string(string_from_arg)
+        self.assertEqual(lundy_arg_cp, lundy_arg)
+        self.assertEqual(lundy_arg_cp.hash, lundy_arg.hash)
+
         lundy_arg = LundyArg('name', 'Rafal', type=type('Rafal'))
         EXPECTED_JSON = {'default': 'Rafal', 'type': "<type 'str'>", 'name': 'name'}
         json_from_arg = lundy_arg.to_json()
@@ -292,6 +313,10 @@ class LundyArgTests(unittest.TestCase):
         self.assertEqual(string_from_arg, EXPECTED_STRING)
         self.assertEqual(type(string_from_arg), str)
 
+        lundy_arg_cp = LundyArg.from_string(string_from_arg)
+        self.assertEqual(lundy_arg_cp, lundy_arg)
+        self.assertEqual(lundy_arg_cp.hash, lundy_arg.hash)
+
         lundy_arg = LundyArg('name', None, type=type(None))
         EXPECTED_JSON = {'default': None, 'type': "<type 'NoneType'>", 'name': 'name'}
         json_from_arg = lundy_arg.to_json()
@@ -302,3 +327,7 @@ class LundyArgTests(unittest.TestCase):
         string_from_arg = lundy_arg.to_string()
         self.assertEqual(string_from_arg, EXPECTED_STRING)
         self.assertEqual(type(string_from_arg), str)
+
+        lundy_arg_cp = LundyArg.from_string(string_from_arg)
+        self.assertEqual(lundy_arg_cp, lundy_arg)
+        self.assertEqual(lundy_arg_cp.hash, lundy_arg.hash)
