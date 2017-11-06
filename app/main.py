@@ -1,17 +1,9 @@
+import os
 from functools import wraps
+from datasets import Method, LundyMethod, LundyProject
 
-from datasets import Method
 
-
-# Other metadata to collect
-# for method_name in dir(func):
-#     method = getattr(func, method_name)
-#     try:
-#         print(method())
-#     except:
-#         print(method)
-
-class Lunni:
+class Lundy:
     @staticmethod
     def collector(*spec_args, **spec_kwargs):
         def collector_decorator(func):
@@ -19,38 +11,24 @@ class Lunni:
             def func_wrapper(*args, **kwargs):
                 loc = locals()
                 result = func(*args, **kwargs)
-                Method(name=loc['func'].__name__,
+                lundy_method = LundyMethod(loc['func'].__name__)
+                lundy_method.scan(func)
+                method_hash = lundy_method.hash
+                m = Method(name=loc['func'].__name__,
                        args=args,
                        kwargs=kwargs,
-                       result=result
-                ).save()
+                       result=result,
+                       hash=method_hash,
+                )
                 return result
             return func_wrapper
         return collector_decorator
 
-#
-x = 10
-# for a in dir():
-#     print(a)
-
-# for value in vars().values():
-#   print(value)
-
-# print(globals())
-
-#print(locals())
 
 
-# import pdb
-#
-# def f(n):
-#     for i in range(n):
-#         j = i * n
-#         print(i, j)
-#     return
-#
-# if __name__ == '__main__':
-#     pdb.set_trace()
-#     f(5)
-
-
+dir_path = os.path.dirname(os.path.realpath(__file__))
+project_dir = os.path.join(dir_path, 'test', 'sample_project_dir')
+project = LundyProject("Lundy", project_dir)
+project.scan()
+print("")
+print(project.__dict__)
