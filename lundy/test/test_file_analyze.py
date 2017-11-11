@@ -88,8 +88,8 @@ class LundyProjectTests(unittest.TestCase):
                                       'py_path': 'sample_project_dir.sample_class',
                                       'os_path': 'sample_project_dir/sample_class.py'}, {'classes': [
             {'name': 'SampleTwo', 'methods': [{'args': [], 'name': '__doc__'}, {'args': [], 'name': '__module__'}]}],
-                                                                                         'py_path': 'sample_project_dir.sample_package.second_sample_class',
-                                                                                         'os_path': 'sample_project_dir/sample_package/second_sample_class.py'}],
+                                         'py_path': 'sample_project_dir.sample_package.second_sample_class',
+                                         'os_path': 'sample_project_dir/sample_package/second_sample_class.py'}],
                          'name': 'Lundy'}
         self.assertEqual(self.project.to_json(), EXPECTED_JSON)
         EXPECTED_STRING = '''{"modules": [{"classes": [{"name": "SampleClass", "methods": [{"args": [], "name": "__doc__"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "var2"}, {"default": null, "type": null, "name": "var3"}], "name": "__init__"}, {"args": [], "name": "__module__"}, {"args": [{"default": null, "type": null, "name": "self"}], "name": "sample_method"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg1"}, {"default": null, "type": null, "name": "arg2"}], "name": "sample_method_with_args"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": null, "name": "arg5"}, {"default": null, "type": null, "name": "arg6"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg7"}, {"default": 4, "type": "<type 'int'>", "name": "arg8"}], "name": "sample_method_with_args_and_kwargs"}, {"args": [{"default": null, "type": null, "name": "self"}, {"default": null, "type": "<type 'NoneType'>", "name": "arg3"}, {"default": 4, "type": "<type 'int'>", "name": "arg4"}], "name": "sample_method_with_kwargs"}]}, {"name": "SampleClass2", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_class", "os_path": "sample_project_dir/sample_class.py"}, {"classes": [{"name": "SampleTwo", "methods": [{"args": [], "name": "__doc__"}, {"args": [], "name": "__module__"}]}], "py_path": "sample_project_dir.sample_package.second_sample_class", "os_path": "sample_project_dir/sample_package/second_sample_class.py"}], "name": "Lundy"}'''
@@ -125,10 +125,10 @@ class LundyModuleTests(unittest.TestCase):
 
     def test_to_json(self):
         self.lundy_module.scan()
-        EXPECTED_JSON = {'classes': [dict(name='SampleClass', methods=[{'args': [], 'name': '__doc__'}, {
+        EXPECTED_JSON = {'classes': [{'name': 'SampleClass', 'methods': [{'args': [], 'name': '__doc__'}, {
             'args': [{'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'var2'},
                      {'default': None, 'type': None, 'name': 'var3'}], 'name': '__init__'},
-                                                                       {'args': [], 'name': '__module__'}, {'args': [
+                                                                         {'args': [], 'name': '__module__'}, {'args': [
                 {'default': None, 'type': None, 'name': 'self'}], 'name': 'sample_method'}, {'args': [
                 {'default': None, 'type': None, 'name': 'self'}, {'default': None, 'type': None, 'name': 'arg1'},
                 {'default': None, 'type': None, 'name': 'arg2'}], 'name': 'sample_method_with_args'}, {'args': [
@@ -136,13 +136,14 @@ class LundyModuleTests(unittest.TestCase):
                 {'default': None, 'type': None, 'name': 'arg6'},
                 {'default': None, 'type': "<type 'NoneType'>", 'name': 'arg7'},
                 {'default': 4, 'type': "<type 'int'>", 'name': 'arg8'}], 'name': 'sample_method_with_args_and_kwargs'},
-                                                                       {'args': [{'default': None, 'type': None,
-                                                                                  'name': 'self'}, {'default': None,
-                                                                                                    'type': "<type 'NoneType'>",
-                                                                                                    'name': 'arg3'},
-                                                                                 {'default': 4, 'type': "<type 'int'>",
-                                                                                  'name': 'arg4'}],
-                                                                        'name': 'sample_method_with_kwargs'}]),
+                                                                         {'args': [{'default': None, 'type': None,
+                                                                                    'name': 'self'}, {'default': None,
+                                                                                                      'type': "<type 'NoneType'>",
+                                                                                                      'name': 'arg3'},
+                                                                                   {'default': 4,
+                                                                                    'type': "<type 'int'>",
+                                                                                    'name': 'arg4'}],
+                                                                          'name': 'sample_method_with_kwargs'}]},
                                      {'name': 'SampleClass2', 'methods': [{'args': [], 'name': '__doc__'},
                                                                           {'args': [], 'name': '__module__'}]}],
                          'py_path': 'sample_project_dir.sample_class',
