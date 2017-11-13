@@ -40,7 +40,7 @@ class LundyArg(LundyObject):
         self.default = default
         self.type = type
 
-    def to_json(self):
+    def to_json(self, allow_child=True):
         obj = copy.copy(self)
         if self.type:
             obj.type = str(obj.type)
@@ -80,11 +80,12 @@ class LundyMethod(LundyObject):
                 lundy_arg = LundyArg(arg, default, type(default))
                 self.args.append(lundy_arg)
 
-    def to_json(self):
+    def to_json(self, allow_child=True):
         obj = copy.copy(self)
         obj.args = []
-        for arg in self.args:
-            obj.args.append(arg.to_json())
+        if allow_child:
+            for arg in self.args:
+                obj.args.append(arg.to_json())
         return obj.__dict__
 
     def __eq__(self, other):
@@ -115,11 +116,12 @@ class LundyClass(LundyObject):
             lundy_method.scan(method_obj)
             self.methods.append(lundy_method)
 
-    def to_json(self):
+    def to_json(self, allow_child=True):
         obj = copy.copy(self)
         obj.methods = []
-        for method in self.methods:
-            obj.methods.append(method.to_json())
+        if allow_child:
+            for method in self.methods:
+                obj.methods.append(method.to_json())
         return obj.__dict__
 
     def __eq__(self, other):
@@ -148,11 +150,12 @@ class LundyModule(LundyObject):
     def __repr__(self):
         return "[LundyModule] {}".format(self.py_path)
 
-    def to_json(self):
+    def to_json(self, allow_child=True):
         obj = copy.copy(self)
         obj.classes = []
-        for cls in self.classes:
-            obj.classes.append(cls.to_json())
+        if  allow_child:
+            for cls in self.classes:
+                obj.classes.append(cls.to_json())
         return obj.__dict__
 
     @property
@@ -209,11 +212,12 @@ class LundyProject(LundyObject):
                 module.scan()
                 self.modules.append(module)
 
-    def to_json(self):
+    def to_json(self, allow_child=True):
         obj = copy.copy(self)
         obj.modules = []
-        for mod in self.modules:
-            obj.modules.append(mod.to_json())
+        if allow_child:
+            for mod in self.modules:
+                obj.modules.append(mod.to_json())
         return obj.__dict__
 
     def __eq__(self, other):

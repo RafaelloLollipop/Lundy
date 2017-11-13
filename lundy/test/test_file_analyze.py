@@ -1,11 +1,10 @@
 import importlib
-import inspect
 import os
 import unittest
 from types import NoneType
 
-from app.datasets import LundyModule, LundyMethod, LundyClass, LundyArg, LundyProject
-from app.test.sample_project_dir.sample_class import SampleClass
+from lundy.datasets import LundyModule, LundyMethod, LundyClass, LundyArg, LundyProject
+from lundy.test.sample_project_dir.sample_class import SampleClass
 
 module = 'sample_project_dir.sample_class'
 module = importlib.import_module(module)
