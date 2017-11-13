@@ -274,15 +274,15 @@ class LundyArgTests(unittest.TestCase):
         self.assertEqual(lundy_arg.type, NoneType)
 
     def test_hash(self):
-        EXPECTED_HASH = 'b068931cc450442b63f5b3d276ea4297766d2bc97441bdf27faaabad3ff3564e'
+        EXPECTED_HASH = '766d2bc97441bdf27faaabad3ff3564e766d2bc97441bdf27faaabad3ff3564e'
         lundy_arg = LundyArg('name')
         self.assertEqual(lundy_arg.hash, EXPECTED_HASH)
 
-        EXPECTED_HASH = 'b068931cc450442b63f5b3d276ea429707be451fb71438ab1e088bd3dea1f194'
+        EXPECTED_HASH = '07be451fb71438ab1e088bd3dea1f19407be451fb71438ab1e088bd3dea1f194'
         lundy_arg = LundyArg('name', 'Rafal', type=type('Rafal'))
         self.assertEqual(lundy_arg.hash, EXPECTED_HASH)
 
-        EXPECTED_HASH = 'b068931cc450442b63f5b3d276ea42976d6a4895bdde068275009cefc4a80d9f'
+        EXPECTED_HASH = '6d6a4895bdde068275009cefc4a80d9f6d6a4895bdde068275009cefc4a80d9f'
         lundy_arg = LundyArg('name', None, type=type(None))
         self.assertEqual(lundy_arg.hash, EXPECTED_HASH)
 
@@ -331,3 +331,9 @@ class LundyArgTests(unittest.TestCase):
         lundy_arg_cp = LundyArg.from_string(string_from_arg)
         self.assertEqual(lundy_arg_cp, lundy_arg)
         self.assertEqual(lundy_arg_cp.hash, lundy_arg.hash)
+
+    def test_hash_diffs(self):
+        lundy_arg = LundyArg('name', 'Rafal', type=type('Rafal'))
+        lundy_arg2 = LundyArg('name', 'Rafal3', type=type('Rafal3'))
+        self.assertNotEqual(lundy_arg.hash, lundy_arg2.hash)
+        self.assertNotEqual(lundy_arg.obj_hash, lundy_arg2.obj_hash)
