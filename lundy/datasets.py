@@ -54,6 +54,10 @@ class LundyArg(LundyObject):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+    @property
+    def obj_hash(self):
+        return hashlib.md5(self.to_string()).hexdigest()
+
     @classmethod
     def from_string(cls, str):
         json_from_str = json.loads(str)
