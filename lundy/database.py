@@ -17,9 +17,11 @@ def get_database():
     user = urllib.quote("lunni")
     password = urllib.quote("afhJKH#$H@saC*&(")
 
-    client = MongoClient("mongodb://{}:{}@192.166.218.144/lunni_test".format(user, password))
+
+    db_url = '192.166.218.144'
+    db_url = '127.0.0.1'
+    client = MongoClient("mongodb://{}:{}@{}/lunni_test".format(user, password, db_url))
     db = client.lunni_test
-    #print db.cool_collection.count()
     return db
 
 def get_project_src():

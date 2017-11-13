@@ -1,9 +1,7 @@
-from app.main import Lundy
+from lundy.test.sample_project_dir.sample_class import SampleClass
 
-
-@Lundy.collector("D")
-def sample_method1(var, var2, var3='raf'):
-    return var + var2
-
-
-print(sample_method1(1, 2, var3='d'))
+sample_class = SampleClass('rafal', 'pafal')
+sample_class.sample_method()
+sample_class.sample_method_with_args("A", "B")
+sample_class.sample_method_with_args_and_kwargs("Y", "W")
+sample_class.sample_method_with_kwargs()

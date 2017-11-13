@@ -8,6 +8,8 @@ import pickle
 
 import copy
 
+from lundy.database import get_database
+
 
 def dumper(obj):
     try:
@@ -253,9 +255,21 @@ class Method:
         self.timestamp = datetime.datetime.now()
         self.hash = hash
 
+    def to_json(self):
+        obj = copy.copy(self)
+        obj.args = []
+        for arg in self.args:
+            if str(type(arg)) == "<type 'instance'>":
+                obj.args.append(arg.__dict__)
+            else:
+                obj.args.append(arg)
+        return obj.__dict__
+
+    def to_string(self):
+        obj = self.to_json()
+        return json.dumps(obj)
+
     def save(self):
-        pass
-        # db = get_database()
-        # print(db.lunni.insert({'abc': 2}))
-        # print(db.instert(self))
-        # coll.instert_one(self)
+        db = get_database()
+        db.lunni_run.insert({'hash': self.hash, 'data':self.to_json()})
+
