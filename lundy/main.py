@@ -14,9 +14,7 @@ class Lundy:
                 result = func(*args, **kwargs)
                 lundy_method = LundyMethod(loc['func'].__name__)
                 lundy_method.scan(func)
-                print(lundy_method.to_json())
                 method_hash = lundy_method.hash
-                print(method_hash)
                 m = Method(name=loc['func'].__name__,
                        args=args,
                        kwargs=kwargs,
