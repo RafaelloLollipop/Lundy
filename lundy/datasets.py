@@ -18,11 +18,16 @@ def dumper(obj):
 
 class LundyObject():
     @property
-    def hash(self):
-        name_hash = hashlib.md5(self.name).hexdigest()
-        obj_hash = hashlib.md5(self.to_string()).hexdigest()
+    def obj_hash(self):
+        return hashlib.md5(self.name).hexdigest()
 
-        return name_hash + obj_hash
+    @property
+    def family_hash(self):
+        return hashlib.md5(self.to_string()).hexdigest()
+
+    @property
+    def hash(self):
+        return self.obj_hash + self.family_hash
 
     def to_string(self):
         obj = self.to_json()
@@ -159,10 +164,9 @@ class LundyModule(LundyObject):
         return obj.__dict__
 
     @property
-    def hash(self):
-        name_hash = hashlib.md5(self.py_path + self.os_path).hexdigest()
-        obj_hash = hashlib.md5(self.to_string()).hexdigest()
-        return name_hash + obj_hash
+    def obj_hash(self):
+        return hashlib.md5(self.py_path + self.os_path).hexdigest()
+
 
     def scan(self):
         module = importlib.import_module(self.py_path)
