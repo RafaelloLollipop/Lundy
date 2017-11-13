@@ -8,6 +8,8 @@ import pickle
 
 import copy
 
+from lundy.database import get_database
+
 
 def dumper(obj):
     try:
@@ -254,8 +256,5 @@ class Method:
         self.hash = hash
 
     def save(self):
-        pass
-        # db = get_database()
-        # print(db.lunni.insert({'abc': 2}))
-        # print(db.instert(self))
-        # coll.instert_one(self)
+        db = get_database()
+        db.lunni_run.insert({'hash': self.hash, 'data':self.to_json()})

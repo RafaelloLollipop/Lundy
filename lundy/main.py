@@ -1,3 +1,4 @@
+import json
 import os
 from functools import wraps
 from datasets import Method, LundyMethod, LundyProject
@@ -13,22 +14,16 @@ class Lundy:
                 result = func(*args, **kwargs)
                 lundy_method = LundyMethod(loc['func'].__name__)
                 lundy_method.scan(func)
+                print(lundy_method.to_json())
                 method_hash = lundy_method.hash
+                print(method_hash)
                 m = Method(name=loc['func'].__name__,
                        args=args,
                        kwargs=kwargs,
                        result=result,
                        hash=method_hash,
                 )
+                m.save()
                 return result
             return func_wrapper
         return collector_decorator
-
-
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-project_dir = os.path.join(dir_path, 'test', 'sample_project_dir')
-project = LundyProject("Lundy")
-project.scan(project_dir)
-print("")
-print(project.__dict__)
