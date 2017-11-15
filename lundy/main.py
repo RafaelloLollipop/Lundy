@@ -1,7 +1,6 @@
-import json
-import os
-from functools import wraps
-from datasets import Method, LundyMethod, LundyProject
+from boltons.funcutils import wraps
+
+from datasets import Method, LundyMethod
 
 
 class Lundy:
