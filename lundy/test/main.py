@@ -9,8 +9,8 @@ project.scan(project_dir)
 
 import requests
 url = 'http://127.0.0.1:8000/api/lundy_objects/'
-data = {'data': project.to_json(), 'hash': project.hash, 'id':2}
-#requests.post(url, json=data)
-print(data['data']['modules'][0]['classes'][1]['methods'])
+data = {'data': project.to_json(), 'hash': project.hash, 'id':4}
+requests.post(url, json=data)
+
 
 

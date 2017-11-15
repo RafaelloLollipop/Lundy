@@ -249,12 +249,13 @@ class LundyProject(LundyObject):
         return lundy_project
 
 class Method:
-    def __init__(self, name, args, kwargs, result, hash):
+    def __init__(self, name, args, kwargs, result, hash, start_time, duration):
         self.name = name
         self.args = args
         self.kwargs = kwargs
         self.result = result
-        self.timestamp = datetime.datetime.now()
+        self.timestamp = start_time
+        self.duration = duration
         self.hash = hash
 
     def to_json(self):
