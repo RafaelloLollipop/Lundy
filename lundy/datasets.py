@@ -153,6 +153,7 @@ class LundyClass(LundyObject):
 
 
 class LundyModule(LundyObject):
+    FORBIDDEN_CLASSES = ['Lundy']
     def __init__(self, py_path, os_path):
         self.py_path = py_path
         self.os_path = os_path
@@ -173,10 +174,11 @@ class LundyModule(LundyObject):
     def obj_hash(self):
         return hashlib.md5(self.py_path + self.os_path).hexdigest()
 
-
     def scan(self):
         module = importlib.import_module(self.py_path)
         for name, obj in inspect.getmembers(module, inspect.isclass):
+            if name in self.FORBIDDEN_CLASSES:
+              continue
             lundy_class = LundyClass(name)
             lundy_class.scan(obj)
             self.classes.append(lundy_class)
