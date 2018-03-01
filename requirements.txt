@@ -1,0 +1,4 @@
+pymongo
+gitpython
+boltons
+mongomock
